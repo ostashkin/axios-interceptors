@@ -6,6 +6,7 @@ dist/
 es/
 lib/
 coverage/
+app/
 
 
 npm-debug.log*
