@@ -1,3 +1,5 @@
-import { AbstractResolver } from './AbstractResolver';
+import { AbstractRequestResolver } from './AbstractRequestResolver';
+import { RequestImprovingHandler } from './RequestImprovingHandler';
+import { RequestCheckingHandler } from './RequestCheckingHandler';
 
-export { AbstractResolver };
+export { AbstractRequestResolver, RequestImprovingHandler, RequestCheckingHandler };
