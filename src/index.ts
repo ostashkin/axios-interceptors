@@ -1,3 +1,3 @@
-import { createImprover, requestInterceptor } from './interceptors';
+import { createImprover, createRequestInterceptor } from './client';
 
-export { createImprover, requestInterceptor };
+export { createImprover, createRequestInterceptor };

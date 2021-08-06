@@ -1,3 +1,4 @@
 import { RequestImprovingChain } from './RequestImprovingChain';
+import { RequestCheckingChain } from './RequestCheckingChain';
 
-export { RequestImprovingChain };
+export { RequestImprovingChain, RequestCheckingChain };

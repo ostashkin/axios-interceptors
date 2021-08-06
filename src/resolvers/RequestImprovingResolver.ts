@@ -1,12 +1,10 @@
 import { AxiosRequestConfig } from 'axios';
-import { RequestImprovingHandler, AbstractRequestResolver } from '../abstract';
+import { RequestImprovingHandler } from '../abstract';
 import { MaybePromise } from '../types/utils';
 import { RequestImprovingChain } from '../chain';
 
-class RequestImprovingResolver extends AbstractRequestResolver {
-  constructor(protected readonly handler: RequestImprovingHandler) {
-    super();
-  }
+class RequestImprovingResolver {
+  constructor(private readonly handler: RequestImprovingHandler) {}
 
   public resolve(request: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {
     return new RequestImprovingChain(this.handler).handle(request);

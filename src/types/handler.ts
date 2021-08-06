@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { MaybePromise } from './utils';
 
 export interface WithNextHandler<Handler> {
@@ -16,3 +16,5 @@ export interface RequestHandler
 export interface ResponseHandler
   extends WithNextHandler<ResponseHandler>,
     WithHandle<AxiosResponse> {}
+
+export interface ErrorHandler extends WithNextHandler<ErrorHandler>, WithHandle<AxiosError> {}
