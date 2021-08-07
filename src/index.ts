@@ -1,3 +1,13 @@
-import { createImprover, createRequestInterceptor } from './client';
+import {
+  createImprover,
+  createRequestInterceptor,
+  createResponseErrorFilter,
+  createResponseErrorInterceptor,
+} from './clientCode';
 
-export { createImprover, createRequestInterceptor };
+export {
+  createImprover,
+  createRequestInterceptor,
+  createResponseErrorFilter,
+  createResponseErrorInterceptor,
+};

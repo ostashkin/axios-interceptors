@@ -1,3 +1,4 @@
 import { RequestInterceptor } from './RequestInterceptor';
+import { ErrorInterceptor } from './ErrorInterceptor';
 
-export { RequestInterceptor };
+export { RequestInterceptor, ErrorInterceptor };

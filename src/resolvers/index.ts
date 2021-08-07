@@ -1,4 +1,5 @@
 import { RequestImprovingResolver } from './RequestImprovingResolver';
 import { RequestCheckingResolver } from './RequestCheckingResolver';
+import { ErrorFilteringResolver } from './ErrorFilteringResolver';
 
-export { RequestImprovingResolver, RequestCheckingResolver };
+export { RequestImprovingResolver, RequestCheckingResolver, ErrorFilteringResolver };

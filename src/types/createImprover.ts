@@ -6,7 +6,7 @@ export interface ImproverLogic {
   (config: AxiosRequestConfig): MaybePromise<AxiosRequestConfig>;
 }
 
-export interface CheckerLogic {
+export interface RequestCheckerLogic {
   (config: AxiosRequestConfig): MaybePromise<boolean>;
 }
 
@@ -15,8 +15,8 @@ export interface CreateImproverBag {
   getHandler(): RequestImprovingHandler;
 }
 
-export interface CreateCheckerBag {
-  setNext: CreateChecker;
+export interface CreateRequestCheckerBag {
+  setNext: CreateRequestChecker;
   getHandler(): RequestCheckingHandler;
 }
 
@@ -24,16 +24,16 @@ export interface CreateImprover {
   (improve: ImproverLogic): CreateImproverBag;
 }
 
-export interface CreateChecker {
-  (check: CheckerLogic): CreateCheckerBag;
+export interface CreateRequestChecker {
+  (check: RequestCheckerLogic): CreateRequestCheckerBag;
 }
 
 export interface CreateImprovingHandler {
   (improve: ImproverLogic): RequestImprovingHandler;
 }
 
-export interface CreateCheckingHandler {
-  (check: CheckerLogic): RequestCheckingHandler;
+export interface CreateRequestCheckingHandler {
+  (check: RequestCheckerLogic): RequestCheckingHandler;
 }
 
 export interface CreateNextImprover {
@@ -43,8 +43,11 @@ export interface CreateNextImprover {
   ): CreateImproverBag;
 }
 
-export interface CreateNextChecker {
-  (currentHandler: RequestCheckingHandler, baseHandler: RequestCheckingHandler): CreateCheckerBag;
+export interface CreateNextRequestChecker {
+  (
+    currentHandler: RequestCheckingHandler,
+    baseHandler: RequestCheckingHandler
+  ): CreateRequestCheckerBag;
 }
 
 export type RequestInterceptorActions = 'check' | 'improve';
@@ -53,14 +56,14 @@ export interface CreateRequestInterceptorBag<
   IsCheckRemoved extends boolean,
   IsImproveRemoved extends boolean
 > {
-  check: (checker: CreateCheckerBag) => CreateRequestInterceptorBag<true, IsImproveRemoved>;
+  check: (checker: CreateRequestCheckerBag) => CreateRequestInterceptorBag<true, IsImproveRemoved>;
   improve: (improver: CreateImproverBag) => CreateRequestInterceptorBag<IsCheckRemoved, true>;
 }
 
 export type CreateRequestInterceptorBagBooleanValues = Record<RequestInterceptorActions, boolean>;
 
 export interface TestBag<InitialExcluded extends RequestInterceptorActions | ''> {
-  check: (checker: CreateCheckerBag) => ExcludedTestBag<InitialExcluded, 'check'>;
+  check: (checker: CreateRequestCheckerBag) => ExcludedTestBag<InitialExcluded, 'check'>;
   improve: (improver: CreateImproverBag) => ExcludedTestBag<InitialExcluded, 'improve'>;
 }
 
