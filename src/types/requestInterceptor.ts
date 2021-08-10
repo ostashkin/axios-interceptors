@@ -1,5 +1,5 @@
-import { RequestImprovingResolver } from '../resolvers/RequestImprovingResolver';
+import { RequestSuccessImprovingResolver } from '../request';
 
 export interface RequestInterceptorConfig {
-  improve?: RequestImprovingResolver;
+  improve?: RequestSuccessImprovingResolver;
 }

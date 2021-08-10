@@ -1,12 +1,12 @@
 import { AxiosRequestConfig } from 'axios';
-import { RequestImprovingHandler } from '../abstract';
-import { MaybePromise, Nullable } from '../types/utils';
-import { isPromise } from '../utils';
+import { RequestSuccessImprovingHandler } from './Handler';
+import { MaybePromise, Nullable } from '../../../types/utils';
+import { isPromise } from '../../../utils';
 
-class RequestImprovingChain {
+class RequestSuccessImprovingChain {
   private config: MaybePromise<Nullable<AxiosRequestConfig>> = null;
 
-  public constructor(private handler: Nullable<RequestImprovingHandler>) {}
+  public constructor(private handler: Nullable<RequestSuccessImprovingHandler>) {}
 
   public handle(config: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {
     this.config = config;
@@ -22,4 +22,4 @@ class RequestImprovingChain {
   }
 }
 
-export { RequestImprovingChain };
+export { RequestSuccessImprovingChain };

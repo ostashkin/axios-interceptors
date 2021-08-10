@@ -1,11 +1,13 @@
 import { AxiosError } from 'axios';
-import { MaybePromise, Nullable } from '../types/utils';
-import { ErrorHandler } from '../types/handler';
+import { MaybePromise, Nullable } from '../../../types/utils';
+import { ErrorHandler } from '../../../types/handler';
 
-abstract class ResponseErrorFilteringHandler implements ErrorHandler {
+class ResponseErrorFilteringHandler implements ErrorHandler {
   private nextHandler: Nullable<ResponseErrorFilteringHandler> = null;
 
-  public abstract handle(entityToHandle: AxiosError): MaybePromise<boolean>;
+  public constructor(
+    public readonly handle: (entityToHandle: AxiosError) => MaybePromise<boolean>
+  ) {}
 
   public setNext(handler: ResponseErrorFilteringHandler): ResponseErrorFilteringHandler {
     this.nextHandler = handler;

@@ -1,4 +1,4 @@
-import { RequestInterceptor } from './RequestInterceptor';
-import { ErrorInterceptor } from './ErrorInterceptor';
+import { RequestSuccessInterceptor } from '../request';
+import { ResponseErrorInterceptor } from '../response';
 
-export { RequestInterceptor, ErrorInterceptor };
+export { RequestSuccessInterceptor, ResponseErrorInterceptor };

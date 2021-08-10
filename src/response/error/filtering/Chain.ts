@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
-import { ResponseErrorFilteringHandler } from '../abstract';
-import { MaybePromise, Nullable } from '../types/utils';
-import { isPromise } from '../utils';
+import { MaybePromise, Nullable } from '../../../types/utils';
+import { isPromise } from '../../../utils';
+import { ResponseErrorFilteringHandler } from './Handler';
 
-class ErrorCheckingChain {
+class ResponseErrorFilteringChain {
   private isValidated: boolean = true;
 
   public constructor(private handler: Nullable<ResponseErrorFilteringHandler>) {}
@@ -25,4 +25,4 @@ class ErrorCheckingChain {
   }
 }
 
-export { ErrorCheckingChain };
+export { ResponseErrorFilteringChain };

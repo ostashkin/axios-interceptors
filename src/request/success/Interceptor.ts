@@ -1,20 +1,20 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { MaybePromise, Nullable } from '../types/utils';
-import { RequestCheckingResolver, RequestImprovingResolver } from '../resolvers';
-import { isPromise } from '../utils';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { MaybePromise, Nullable } from '../../types/utils';
+import { RequestSuccessCheckingResolver, RequestSuccessImprovingResolver } from '.';
+import { isPromise } from '../../utils';
 
-class RequestInterceptor {
-  private improvingResolver: Nullable<RequestImprovingResolver> = null;
+class RequestSuccessInterceptor {
+  private improvingResolver: Nullable<RequestSuccessImprovingResolver> = null;
 
-  private checkingResolver: Nullable<RequestCheckingResolver> = null;
+  private checkingResolver: Nullable<RequestSuccessCheckingResolver> = null;
 
   private interceptorID: Nullable<number> = null;
 
-  public addImprovingResolver(resolver: RequestImprovingResolver) {
+  public addImprovingResolver(resolver: RequestSuccessImprovingResolver) {
     this.improvingResolver = resolver;
   }
 
-  public addCheckingResolver(resolver: RequestCheckingResolver) {
+  public addCheckingResolver(resolver: RequestSuccessCheckingResolver) {
     this.checkingResolver = resolver;
   }
 
@@ -47,11 +47,15 @@ class RequestInterceptor {
         if (this.improvingResolver !== null) return this.improvingResolver.resolve(request);
         return request;
       }
-      return undefined as any;
+      const { CancelToken } = axios;
+      const source = CancelToken.source();
+
+      request.cancelToken = source.token;
+      source.cancel('canceled by interceptor');
     }
     if (this.improvingResolver !== null) return this.improvingResolver.resolve(request);
     return request;
   }
 }
 
-export { RequestInterceptor };
+export { RequestSuccessInterceptor };

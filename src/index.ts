@@ -1,13 +1,15 @@
 import {
-  createImprover,
+  createRequestImprover,
   createRequestInterceptor,
   createResponseErrorFilter,
   createResponseErrorInterceptor,
-} from './clientCode';
+  createAsyncAction,
+} from './client';
 
 export {
-  createImprover,
+  createRequestImprover,
   createRequestInterceptor,
   createResponseErrorFilter,
   createResponseErrorInterceptor,
+  createAsyncAction,
 };

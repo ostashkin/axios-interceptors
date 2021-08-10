@@ -1,15 +1,21 @@
 import { AxiosRequestConfig } from 'axios';
-import { RequestCheckingHandler } from '../abstract';
-import { MaybePromise, Nullable } from '../types/utils';
-import { isPromise } from '../utils';
+import { RequestSuccessCheckingHandler } from './Handler';
+import { MaybePromise, Nullable } from '../../../types/utils';
+import { isPromise } from '../../../utils';
 
-class RequestCheckingChain {
+class RequestSuccessCheckingChain {
   private isValidated: boolean = true;
 
-  public constructor(private handler: Nullable<RequestCheckingHandler>) {}
+  public constructor(private handler: Nullable<RequestSuccessCheckingHandler>) {}
 
   public handle(config: AxiosRequestConfig): MaybePromise<boolean> {
-    if (!this.isValidated || this.handler === null) return this.isValidated;
+    if (!this.isValidated) {
+      // return false;
+      throw new Error('asd');
+    }
+    if (this.handler === null) {
+      return this.isValidated;
+    }
     const mayBePromise = this.handler.handle(config);
     this.handler = this.handler.getNextHandler();
     if (!isPromise(mayBePromise)) {
@@ -25,4 +31,4 @@ class RequestCheckingChain {
   }
 }
 
-export { RequestCheckingChain };
+export { RequestSuccessCheckingChain };

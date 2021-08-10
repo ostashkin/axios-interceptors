@@ -18,3 +18,5 @@ export interface ResponseHandler
     WithHandle<AxiosResponse> {}
 
 export interface ErrorHandler extends WithNextHandler<ErrorHandler>, WithHandle<AxiosError> {}
+
+export interface IAsyncActionHandler extends WithNextHandler<IAsyncActionHandler> {}
