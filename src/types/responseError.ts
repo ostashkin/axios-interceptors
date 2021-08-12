@@ -2,6 +2,7 @@ import { AxiosError, AxiosInstance } from 'axios';
 import { MaybePromise } from './utils';
 import { CreateAsyncActionBag } from './asyncAction';
 import { ResponseErrorFilteringHandler } from '../response';
+import { Interceptor } from './interceptor';
 
 /**
  * Функция, фильтрующая поступающие ошибки
@@ -54,5 +55,5 @@ export interface InterceptResponseErrorParams {
 }
 
 export interface CreateResponseErrorInterceptor {
-  (instance: AxiosInstance, params: InterceptResponseErrorParams): any;
+  (instance: AxiosInstance, params: InterceptResponseErrorParams): Interceptor;
 }

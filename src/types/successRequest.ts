@@ -1,6 +1,8 @@
 import { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { RequestSuccessCheckingHandler, RequestSuccessImprovingHandler } from '../request';
 import { CreateNextLogic, CreationBag, HandlerLogic } from './utils';
+import { AsyncActionLogic } from './asyncAction';
+import { Interceptor } from './interceptor';
 
 export type RequestImproverLogic = HandlerLogic<AxiosRequestConfig, AxiosRequestConfig>;
 export type RequestCheckerLogic = HandlerLogic<AxiosRequestConfig, boolean>;
@@ -29,6 +31,7 @@ export interface CreateSuccessRequestImprover {
 
 export interface CreateSuccessRequestChecker {
   (check: RequestCheckerLogic): CreateSuccessRequestCheckerBag;
+  (check: RequestCheckerLogic, fix: AsyncActionLogic): CreateSuccessRequestCheckerBag;
 }
 
 /**
@@ -40,5 +43,5 @@ export interface InterceptSuccessRequestParams {
 }
 
 export interface CreateSuccessRequestInterceptor {
-  (instance: AxiosInstance, params: InterceptSuccessRequestParams): any;
+  (instance: AxiosInstance, params: InterceptSuccessRequestParams): Interceptor;
 }
