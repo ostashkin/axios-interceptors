@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { MaybePromise, Nullable } from '../../types/utils';
 import { RequestSuccessCheckingResolver, RequestSuccessImprovingResolver } from '.';
 import { isPromise } from '../../utils';
+import { Interceptor } from '../../types/interceptor';
 
 class RequestSuccessInterceptor {
   private improvingResolver: Nullable<RequestSuccessImprovingResolver> = null;
@@ -18,12 +19,17 @@ class RequestSuccessInterceptor {
     this.checkingResolver = resolver;
   }
 
-  public setup(instance: AxiosInstance): void {
+  public setup(instance: AxiosInstance): Interceptor {
     if (this.interceptorID !== null) {
       instance.interceptors.request.eject(this.interceptorID);
       this.interceptorID = null;
     }
     this.interceptorID = instance.interceptors.request.use(this.interceptRequest.bind(this));
+    return {
+      continueExecution: () => {
+        if (this.checkingResolver !== null) this.checkingResolver.continueExecution();
+      },
+    };
   }
 
   private interceptRequest(request: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {

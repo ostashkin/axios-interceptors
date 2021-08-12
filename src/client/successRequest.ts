@@ -11,7 +11,10 @@ import {
   CreateNextSuccessRequestChecker,
   CreateSuccessRequestChecker,
   CreateSuccessRequestInterceptor,
+  RequestCheckerLogic,
 } from '../types/successRequest';
+import { Waiter } from '../asyncAction';
+import { AsyncActionLogic } from '../types/asyncAction';
 
 const createNextImprover: CreateNextSuccessRequestImprover = (currentImprover, baseImprover) => ({
   setNext(improve) {
@@ -53,8 +56,17 @@ const createRequestImprover: CreateSuccessRequestImprover = (improve) => {
   };
 };
 
-const createRequestChecker: CreateSuccessRequestChecker = (check) => {
-  const baseChecker = new RequestSuccessCheckingHandler(check);
+const createRequestChecker: CreateSuccessRequestChecker = (
+  check: RequestCheckerLogic,
+  fix?: AsyncActionLogic
+) => {
+  const createBaseChecker = () => {
+    if (fix === undefined) return new RequestSuccessCheckingHandler(check);
+    const waiter = new Waiter(fix);
+    return new RequestSuccessCheckingHandler(check, waiter);
+  };
+
+  const baseChecker = createBaseChecker();
   return {
     setNext(nextCheck) {
       const nextChecker = new RequestSuccessCheckingHandler(nextCheck);
@@ -76,7 +88,7 @@ const createRequestInterceptor: CreateSuccessRequestInterceptor = (instance, par
   if (check !== undefined) {
     interceptor.addCheckingResolver(new RequestSuccessCheckingResolver(check.getHandler()));
   }
-  interceptor.setup(instance);
+  return interceptor.setup(instance);
 };
 
 export { createRequestChecker, createRequestImprover, createRequestInterceptor };

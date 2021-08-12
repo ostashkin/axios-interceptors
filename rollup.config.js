@@ -6,18 +6,22 @@ export default {
   input: './src/index.ts',
   output: [
     {
-      name: 'resteps',
+      name: 'axios-interceptors',
       file: pkg.browser,
       format: 'umd',
+      globals: { axios: 'axios' },
     },
     {
       file: pkg.main,
       format: 'cjs',
+      globals: { axios: 'axios' },
     },
     {
       file: pkg.module,
       format: 'es',
+      globals: { axios: 'axios' },
     },
   ],
   plugins: [typescript(), terser()],
+  external: ['axios'],
 };
