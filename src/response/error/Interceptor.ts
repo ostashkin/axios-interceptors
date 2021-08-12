@@ -1,8 +1,10 @@
 import { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { MaybePromise, Nullable } from '../../types/utils';
-import { isPromise } from '../../utils';
+import { injectInterceptorID, isPromise } from '../../utils';
 import { ResponseErrorFilteringResolver } from '.';
 import { AsyncActionResolver } from '../../asyncAction';
+import { IsRequestRepeatRequired } from '../../types/responseError';
+import { AxiosConfigWithInterceptorID } from '../../types/interceptor';
 
 class ResponseErrorInterceptor {
   /**
@@ -30,6 +32,14 @@ class ResponseErrorInterceptor {
    */
   private interceptorID: Nullable<number> = null;
 
+  private repeats: Record<string, { originalError: AxiosError; count: number }> = {};
+
+  private readonly isRepeatRequired: boolean | IsRequestRepeatRequired;
+
+  public constructor(repeatRequest?: boolean | IsRequestRepeatRequired) {
+    this.isRepeatRequired = repeatRequest || false;
+  }
+
   public addFilteringResolver(resolver: ResponseErrorFilteringResolver) {
     this.filteringResolver = resolver;
   }
@@ -44,6 +54,7 @@ class ResponseErrorInterceptor {
       instance.interceptors.response.eject(this.interceptorID);
       this.interceptorID = null;
     }
+    instance.interceptors.request.use(injectInterceptorID);
     this.interceptorID = instance.interceptors.response.use(
       (response) => response,
       this.interceptError.bind(this)
@@ -55,8 +66,30 @@ class ResponseErrorInterceptor {
     };
   }
 
-  private repeatRequest(error: AxiosError): Promise<AxiosResponse> {
-    return this.axiosInstance!(error.config);
+  private tryToRepeatRequest(error: AxiosError): Promise<AxiosResponse> {
+    const config = error.config as AxiosConfigWithInterceptorID;
+    if (this.repeats[config.interceptorID] === undefined) {
+      this.repeats[config.interceptorID] = { originalError: error, count: 0 };
+    }
+
+    if (typeof this.isRepeatRequired === 'boolean') {
+      if (this.isRepeatRequired) return this.axiosInstance!(error.config);
+      return Promise.reject();
+    }
+
+    this.repeats[config.interceptorID].count += 1;
+    if (
+      this.isRepeatRequired(
+        this.repeats[config.interceptorID].count,
+        error,
+        this.repeats[config.interceptorID].originalError
+      )
+    ) {
+      return this.axiosInstance!(error.config);
+    }
+
+    delete this.repeats[config.interceptorID];
+    return Promise.reject();
   }
 
   private interceptError(error: AxiosError): MaybePromise<AxiosResponse> {
@@ -68,7 +101,11 @@ class ResponseErrorInterceptor {
             if (canIntercept) {
               if (this.asyncActionResolver !== null) {
                 this.asyncActionResolver.resolve().then(() => {
-                  this.repeatRequest(error).then(resolve);
+                  this.tryToRepeatRequest(error)
+                    .then(resolve)
+                    .catch(() => {
+                      reject(error);
+                    });
                 });
               } else {
                 reject(error);
@@ -81,24 +118,32 @@ class ResponseErrorInterceptor {
       }
       if (mayBePromiseCanIntercept) {
         if (this.asyncActionResolver !== null) {
-          return new Promise((resolve) => {
+          return new Promise((resolve, reject) => {
             this.asyncActionResolver!.resolve().then(() => {
-              this.repeatRequest(error).then(resolve);
+              this.tryToRepeatRequest(error)
+                .then(resolve)
+                .catch(() => {
+                  reject(error);
+                });
             });
           });
         }
-        return undefined as any;
+        throw error;
       }
       throw error;
     }
     if (this.asyncActionResolver !== null) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         this.asyncActionResolver!.resolve().then(() => {
-          this.repeatRequest(error).then(resolve);
+          this.tryToRepeatRequest(error)
+            .then(resolve)
+            .catch(() => {
+              reject(error);
+            });
         });
       });
     }
-    return undefined as any;
+    throw error;
   }
 }
 
