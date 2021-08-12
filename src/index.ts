@@ -1,5 +1,6 @@
 import {
   createRequestImprover,
+  createRequestChecker,
   createRequestInterceptor,
   createResponseErrorFilter,
   createResponseErrorInterceptor,
@@ -8,6 +9,7 @@ import {
 
 export {
   createRequestImprover,
+  createRequestChecker,
   createRequestInterceptor,
   createResponseErrorFilter,
   createResponseErrorInterceptor,
