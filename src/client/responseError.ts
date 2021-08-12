@@ -39,8 +39,8 @@ const createResponseErrorFilter: CreateResponseErrorFilter = (check) => {
 };
 
 const createResponseErrorInterceptor: CreateResponseErrorInterceptor = (instance, params) => {
-  const { intercept, filter } = params;
-  const interceptor = new ResponseErrorInterceptor();
+  const { intercept, filter, repeatRequest } = params;
+  const interceptor = new ResponseErrorInterceptor(repeatRequest);
   if (filter !== undefined) {
     interceptor.addFilteringResolver(new ResponseErrorFilteringResolver(filter.getHandler()));
   }

@@ -1,3 +1,4 @@
 import { isPromise } from './isPromise';
+import { injectInterceptorID } from './injectInterceptorID';
 
-export { isPromise };
+export { isPromise, injectInterceptorID };

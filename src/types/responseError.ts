@@ -51,9 +51,13 @@ export interface InterceptResponseErrorParams {
   filter?: CreateResponseErrorFilterBag;
   // TODO в эту функцию необходимо поместить объект интерцептора с методами управления им
   intercept?: CreateAsyncActionBag;
-  repeatRequest?: boolean;
+  repeatRequest?: IsRequestRepeatRequired | boolean;
 }
 
 export interface CreateResponseErrorInterceptor {
   (instance: AxiosInstance, params: InterceptResponseErrorParams): Interceptor;
+}
+
+export interface IsRequestRepeatRequired {
+  (repeatCount: number, currentError: AxiosError, originalError: AxiosError): boolean;
 }
