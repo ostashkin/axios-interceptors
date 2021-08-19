@@ -3,7 +3,7 @@ import { MaybePromise, Nullable } from '../../types/utils';
 import { injectInterceptorID, isPromise } from '../../utils';
 import { ResponseErrorFilteringResolver } from '.';
 import { AsyncActionResolver } from '../../asyncAction';
-import { IsRequestRepeatRequired } from '../../types/responseError';
+import { IsRequestRepeatRequired } from '../../types/client/responseError';
 import { AxiosConfigWithInterceptorID } from '../../types/interceptor';
 
 class ResponseErrorInterceptor {

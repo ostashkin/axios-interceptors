@@ -1,8 +1,8 @@
 import { AxiosRequestConfig } from 'axios';
 import { MaybePromise, Nullable } from '../../../types/utils';
-import { RequestHandler } from '../../../types/handler';
+import { SuccessRequestHandler } from '../../../types/handler';
 
-class RequestSuccessImprovingHandler implements RequestHandler {
+class RequestSuccessImprovingHandler implements SuccessRequestHandler {
   private nextHandler: Nullable<RequestSuccessImprovingHandler> = null;
 
   public constructor(

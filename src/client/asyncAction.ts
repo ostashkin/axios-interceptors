@@ -1,4 +1,4 @@
-import { CreateAsyncAction, CreateNextAsyncAction } from '../types/asyncAction';
+import { CreateAsyncAction, CreateNextAsyncAction } from '../types/client/asyncAction';
 import { AsyncActionHandler, Waiter } from '../asyncAction';
 
 export const createNextAsyncAction: CreateNextAsyncAction = (currentHandler, baseHandler) => ({

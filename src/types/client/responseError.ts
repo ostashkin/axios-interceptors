@@ -1,8 +1,8 @@
 import { AxiosError, AxiosInstance } from 'axios';
-import { MaybePromise } from './utils';
+import { MaybePromise } from '../utils';
 import { CreateAsyncActionBag } from './asyncAction';
-import { ResponseErrorFilteringHandler } from '../response';
-import { Interceptor } from './interceptor';
+import { ResponseErrorFilteringHandler } from '../../response';
+import { Interceptor } from '../interceptor';
 
 /**
  * Функция, фильтрующая поступающие ошибки

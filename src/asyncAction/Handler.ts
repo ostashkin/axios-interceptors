@@ -1,6 +1,6 @@
 import { Nullable } from '../types/utils';
-import { IAsyncActionHandler } from '../types/handler';
 import { Waiter } from './Waiter';
+import { IAsyncActionHandler } from '../types/asyncAction';
 
 class AsyncActionHandler implements IAsyncActionHandler {
   private nextHandler: Nullable<AsyncActionHandler> = null;

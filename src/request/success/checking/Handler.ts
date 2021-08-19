@@ -1,10 +1,10 @@
 import { AxiosRequestConfig } from 'axios';
 import { MaybePromise, Nullable } from '../../../types/utils';
-import { RequestHandler } from '../../../types/handler';
+import { SuccessRequestHandler } from '../../../types/handler';
 import { Waiter } from '../../../asyncAction';
-import { RequestCheckerLogic } from '../../../types/successRequest';
+import { RequestCheckerLogic } from '../../../types/client/successRequest';
 
-class RequestSuccessCheckingHandler implements RequestHandler {
+class RequestSuccessCheckingHandler implements SuccessRequestHandler {
   private nextHandler: Nullable<RequestSuccessCheckingHandler> = null;
 
   private readonly fixWaiter: Nullable<Waiter>;

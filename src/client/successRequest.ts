@@ -12,9 +12,9 @@ import {
   CreateSuccessRequestChecker,
   CreateSuccessRequestInterceptor,
   RequestCheckerLogic,
-} from '../types/successRequest';
+} from '../types/client/successRequest';
 import { Waiter } from '../asyncAction';
-import { AsyncActionLogic } from '../types/asyncAction';
+import { AsyncActionLogic } from '../types/client/asyncAction';
 
 const createNextImprover: CreateNextSuccessRequestImprover = (currentImprover, baseImprover) => ({
   setNext(improve) {

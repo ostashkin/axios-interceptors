@@ -1,5 +1,5 @@
 import { Nullable } from '../types/utils';
-import { AsyncActionLogic } from '../types/asyncAction';
+import { AsyncActionLogic } from '../types/client/asyncAction';
 
 class Waiter {
   public constructor(private readonly action: AsyncActionLogic) {}

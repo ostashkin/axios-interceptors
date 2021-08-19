@@ -2,7 +2,7 @@ import {
   CreateNextResponseErrorFilter,
   CreateResponseErrorFilter,
   CreateResponseErrorInterceptor,
-} from '../types/responseError';
+} from '../types/client/responseError';
 import {
   ResponseErrorFilteringHandler,
   ResponseErrorFilteringResolver,

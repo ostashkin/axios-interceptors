@@ -1,8 +1,8 @@
 import { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { RequestSuccessCheckingHandler, RequestSuccessImprovingHandler } from '../request';
-import { CreateNextLogic, CreationBag, HandlerLogic } from './utils';
+import { RequestSuccessCheckingHandler, RequestSuccessImprovingHandler } from '../../request';
+import { CreateNextLogic, CreationBag, HandlerLogic } from '../utils';
 import { AsyncActionLogic } from './asyncAction';
-import { Interceptor } from './interceptor';
+import { Interceptor } from '../interceptor';
 
 export type RequestImproverLogic = HandlerLogic<AxiosRequestConfig, AxiosRequestConfig>;
 export type RequestCheckerLogic = HandlerLogic<AxiosRequestConfig, boolean>;
