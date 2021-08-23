@@ -38,6 +38,7 @@
     "@typescript-eslint/no-useless-constructor": 2,
     "no-useless-constructor": 0,
     "@typescript-eslint/no-empty-function": 2,
-    "no-empty-function": 0
+    "no-empty-function": 0,
+    "class-methods-use-this": 0
   }
 }

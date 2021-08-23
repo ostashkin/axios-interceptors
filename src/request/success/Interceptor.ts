@@ -1,8 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { MaybePromise, Nullable } from '../../types/utils';
 import { RequestSuccessCheckingResolver, RequestSuccessImprovingResolver } from '.';
-import { injectInterceptorID, isPromise } from '../../utils';
+import { isPromise } from '../../utils';
 import { Interceptor } from '../../types/interceptor';
+import { AbstractIDInjector } from '../../IDInjector';
 
 class RequestSuccessInterceptor {
   private improvingResolver: Nullable<RequestSuccessImprovingResolver> = null;
@@ -10,6 +11,11 @@ class RequestSuccessInterceptor {
   private checkingResolver: Nullable<RequestSuccessCheckingResolver> = null;
 
   private interceptorID: Nullable<number> = null;
+
+  /**
+   * @param IDInjector Класс, предоставляющий для запроса уникальный ID
+   */
+  public constructor(private readonly IDInjector: AbstractIDInjector) {}
 
   public addImprovingResolver(resolver: RequestSuccessImprovingResolver) {
     this.improvingResolver = resolver;
@@ -33,7 +39,7 @@ class RequestSuccessInterceptor {
   }
 
   private interceptRequest(request: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {
-    injectInterceptorID(request);
+    this.IDInjector.injectID(request);
     if (this.checkingResolver !== null) {
       const canResolve = this.checkingResolver.resolve(request);
       if (isPromise(canResolve)) {
