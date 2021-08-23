@@ -1,12 +1,12 @@
 import { AxiosRequestConfig } from 'axios';
-import { AbstractIDInjector } from './AbstractIDInjector';
+import { AbstractIDManager } from './AbstractIDManager';
 import { AxiosConfigWithInterceptorID } from '../types/interceptor';
 
 /**
  * BaseIDCreator снабжает запрос ID с помощью Math.random
  */
-class BaseIDCreator extends AbstractIDInjector {
-  private static instance: BaseIDCreator | null = null;
+class BaseIDManager extends AbstractIDManager {
+  private static instance: BaseIDManager | null = null;
 
   private constructor() {
     super();
@@ -16,17 +16,17 @@ class BaseIDCreator extends AbstractIDInjector {
     return Math.random().toString();
   }
 
-  public static getCreator(): BaseIDCreator {
-    if (BaseIDCreator.instance === null) BaseIDCreator.instance = new BaseIDCreator();
-    return BaseIDCreator.instance;
+  public static getCreator(): BaseIDManager {
+    if (BaseIDManager.instance === null) BaseIDManager.instance = new BaseIDManager();
+    return BaseIDManager.instance;
   }
 
   public injectID(request: AxiosRequestConfig): AxiosRequestConfig {
     if ((request as AxiosConfigWithInterceptorID).interceptorID === undefined) {
-      (request as AxiosConfigWithInterceptorID).interceptorID = BaseIDCreator.createID();
+      (request as AxiosConfigWithInterceptorID).interceptorID = BaseIDManager.createID();
     }
     return request;
   }
 }
 
-export { BaseIDCreator };
+export { BaseIDManager };

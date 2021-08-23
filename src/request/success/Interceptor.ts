@@ -3,7 +3,7 @@ import { MaybePromise, Nullable } from '../../types/utils';
 import { RequestSuccessCheckingResolver, RequestSuccessImprovingResolver } from '.';
 import { isPromise } from '../../utils';
 import { Interceptor } from '../../types/interceptor';
-import { AbstractIDInjector } from '../../IDInjector';
+import { AbstractIDManager } from '../../IDManager';
 import { AbstractCancelManager } from '../../CancelManager';
 
 class RequestSuccessInterceptor {
@@ -14,11 +14,11 @@ class RequestSuccessInterceptor {
   private interceptorID: Nullable<number> = null;
 
   /**
-   * @param IDInjector Класс, предоставляющий для запроса уникальный ID
+   * @param IDManager Класс, предоставляющий для запроса уникальный ID
    * @param cancelManager Класс, отменяющий запрос
    */
   public constructor(
-    private readonly IDInjector: AbstractIDInjector,
+    private readonly IDManager: AbstractIDManager,
     private readonly cancelManager: AbstractCancelManager
   ) {}
 
@@ -69,7 +69,7 @@ class RequestSuccessInterceptor {
   }
 
   private interceptRequest(request: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {
-    this.IDInjector.injectID(request);
+    this.IDManager.injectID(request);
     if (this.checkingResolver !== null) {
       const canResolve = this.checkingResolver.resolve(request);
       if (isPromise(canResolve)) return this.tryToResolveImprovedRequest(canResolve, request);
