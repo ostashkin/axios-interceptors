@@ -1,9 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { MaybePromise, Nullable } from '../../types/utils';
 import { RequestSuccessCheckingResolver, RequestSuccessImprovingResolver } from '.';
 import { isPromise } from '../../utils';
 import { Interceptor } from '../../types/interceptor';
 import { AbstractIDInjector } from '../../IDInjector';
+import { AbstractCancelManager } from '../../CancelManager';
 
 class RequestSuccessInterceptor {
   private improvingResolver: Nullable<RequestSuccessImprovingResolver> = null;
@@ -14,8 +15,12 @@ class RequestSuccessInterceptor {
 
   /**
    * @param IDInjector Класс, предоставляющий для запроса уникальный ID
+   * @param cancelManager Класс, отменяющий запрос
    */
-  public constructor(private readonly IDInjector: AbstractIDInjector) {}
+  public constructor(
+    private readonly IDInjector: AbstractIDInjector,
+    private readonly cancelManager: AbstractCancelManager
+  ) {}
 
   public addImprovingResolver(resolver: RequestSuccessImprovingResolver) {
     this.improvingResolver = resolver;
@@ -57,11 +62,7 @@ class RequestSuccessInterceptor {
         if (result) {
           resolve(this.tryToReturnImprovedRequest(request));
         } else {
-          const { CancelToken } = axios;
-          const source = CancelToken.source();
-
-          request.cancelToken = source.token;
-          source.cancel('canceled by interceptor');
+          this.cancelManager.cancelRequest(request);
         }
       });
     });
@@ -73,11 +74,7 @@ class RequestSuccessInterceptor {
       const canResolve = this.checkingResolver.resolve(request);
       if (isPromise(canResolve)) return this.tryToResolveImprovedRequest(canResolve, request);
       if (canResolve) return this.tryToReturnImprovedRequest(request);
-      const { CancelToken } = axios;
-      const source = CancelToken.source();
-
-      request.cancelToken = source.token;
-      source.cancel('canceled by interceptor');
+      this.cancelManager.cancelRequest(request);
     }
     return this.tryToReturnImprovedRequest(request);
   }
