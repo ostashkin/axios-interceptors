@@ -38,36 +38,48 @@ class RequestSuccessInterceptor {
     };
   }
 
+  /**
+   * Поптыка заимпровить запрос
+   * @param request
+   * @private
+   */
+  private tryToReturnImprovedRequest(request: AxiosRequestConfig): AxiosRequestConfig {
+    if (this.improvingResolver === null) return request;
+    return this.improvingResolver.resolve(request) as AxiosRequestConfig;
+  }
+
+  private tryToResolveImprovedRequest(
+    canResolve: Promise<boolean>,
+    request: AxiosRequestConfig
+  ): Promise<AxiosRequestConfig> {
+    return new Promise((resolve) => {
+      canResolve.then((result) => {
+        if (result) {
+          resolve(this.tryToReturnImprovedRequest(request));
+        } else {
+          const { CancelToken } = axios;
+          const source = CancelToken.source();
+
+          request.cancelToken = source.token;
+          source.cancel('canceled by interceptor');
+        }
+      });
+    });
+  }
+
   private interceptRequest(request: AxiosRequestConfig): MaybePromise<AxiosRequestConfig> {
     this.IDInjector.injectID(request);
     if (this.checkingResolver !== null) {
       const canResolve = this.checkingResolver.resolve(request);
-      if (isPromise(canResolve)) {
-        return new Promise((resolve) => {
-          canResolve.then((result) => {
-            if (result) {
-              if (this.improvingResolver !== null) {
-                resolve(this.improvingResolver.resolve(request));
-              } else {
-                resolve(request);
-              }
-            }
-            resolve(undefined as any);
-          });
-        });
-      }
-      if (canResolve) {
-        if (this.improvingResolver !== null) return this.improvingResolver.resolve(request);
-        return request;
-      }
+      if (isPromise(canResolve)) return this.tryToResolveImprovedRequest(canResolve, request);
+      if (canResolve) return this.tryToReturnImprovedRequest(request);
       const { CancelToken } = axios;
       const source = CancelToken.source();
 
       request.cancelToken = source.token;
       source.cancel('canceled by interceptor');
     }
-    if (this.improvingResolver !== null) return this.improvingResolver.resolve(request);
-    return request;
+    return this.tryToReturnImprovedRequest(request);
   }
 }
 
